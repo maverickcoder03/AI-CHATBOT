@@ -1,21 +1,12 @@
-from flask import Flask, render_template, request, jsonify
-from chatbot import get_response
-from database import init_db, save_chat
+"""
+Entry point for running the Nova AI Chatbot application.
+Powered by FastAPI and Uvicorn.
+"""
+import uvicorn
+from config import PORT, DEBUG
+from main import app
 
-app=Flask(__name__)
-init_db()
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.post("/chat")
-def chat():
-    data=request.get_json()
-    msg=data.get("message","").strip()
-    reply=get_response(msg)
-    save_chat(msg,reply)
-    return jsonify({"reply":reply})
-
-if __name__=="__main__":
-    app.run(debug=True)
+if __name__ == "__main__":
+    print(f"🚀 Starting Nova AI on http://127.0.0.1:{PORT}")
+    print(f"📖 Interactive Swagger API docs: http://127.0.0.1:{PORT}/docs")
+    uvicorn.run("main:app", host="127.0.0.1", port=PORT, reload=DEBUG)
